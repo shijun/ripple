@@ -2,9 +2,21 @@
 
 tokens = (
     'SYMBOL',
+    'STRING',
+    'ATOM',
+    'NUMBER',
 )
 
 t_SYMBOL = r'[!#$%&|*+-/:<=>?@^_~]'
+
+t_STRING = r'"[^"]*"'
+
+# An atom is a letter or symbol, followed by
+# any number of letters, digits, or symbols.
+t_ATOM = r'([A-Za-z]|' + t_SYMBOL + r')' + \
+         r'(\w*|' + t_SYMBOL + r'*)'
+
+t_NUMBER = r'\d+'
 
 t_ignore = ' '
 
