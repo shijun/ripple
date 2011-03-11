@@ -16,7 +16,7 @@ t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 t_ATOM = r'([A-Za-z]|' + t_SYMBOL + r')' + \
          r'(\w*|' + t_SYMBOL + r'*)'
 
-t_NUMBER = r'\d+'
+t_NUMBER = r'\d+|\#b[01]+|\#o[0-7]+|\#d\d+|\#x[\dA-Fa-f]+'
 
 t_ignore = ' '
 
