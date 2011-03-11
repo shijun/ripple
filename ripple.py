@@ -7,7 +7,7 @@ tokens = (
     'NUMBER',
 )
 
-t_SYMBOL = r'[!#$%&|*+-/:<=>?@^_~]'
+t_SYMBOL = r'[!$%&|*+-/:<=>?@^_~]'
 
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
