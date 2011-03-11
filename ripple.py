@@ -9,7 +9,7 @@ tokens = (
 
 t_SYMBOL = r'[!#$%&|*+-/:<=>?@^_~]'
 
-t_STRING = r'"[^"]*"'
+t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
