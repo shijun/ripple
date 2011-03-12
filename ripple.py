@@ -30,16 +30,29 @@ import ply.lex as lex
 lexer = lex.lex()
 
 def p_expression(p):
-    '''expression : ATOM
-                  | BOOL
-                  | STRING
-                  | NUMBER'''
+    '''expression : expression list
+                  | expression terminal
+                  | empty'''
+
+def p_list(p):
+    '''list : '(' expression ')' '''
+    p[0] = p[2]
+
+def p_terminal(p):
+    '''terminal : ATOM
+                | BOOL
+                | STRING
+                | NUMBER'''
     if p[1] == '#t':
         print(True)
     elif p[1] == '#f':
         print(False)
     else:
         print(p[1])
+
+def p_empty(p):
+    '''empty :'''
+    pass
 
 def p_error(p):
     print('Syntax error: %s' % p.value)
