@@ -16,7 +16,10 @@ t_ATOM = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
 
 t_BOOL = r'\#[tf]'
 
-t_NUMBER = r'\d+|\#b[01]+|\#o[0-7]+|\#d\d+|\#x[\dA-Fa-f]+'
+def t_NUMBER(t):
+    r'\d+'
+    t.value = int(t.value)
+    return t
 
 t_ignore = ' '
 
@@ -37,17 +40,27 @@ def p_expression(p):
 
 def p_list(p):
     '''list : '(' ATOM operands ')' '''
-    print('operation: %s' % p[2])
-    p[0] = p[3]
+    from operator import add, sub, mul, div
+    from functools import reduce
+
+    if p[2] == '+':
+        p[0] = reduce(add, p[3])
+    elif p[2] == '-':
+        p[0] = reduce(sub, p[3])
+    elif p[2] == '*':
+        p[0] = reduce(mul, p[3])
+    elif p[2] == '/':
+        p[0] = reduce(div, p[3])
 
 def p_operands(p):
     '''operands : operands terminal
                 | operands list
                 | empty'''
+    # the following is a left unfold [i.e. opposite of foldl()]
     if len(p) == 3:
-        if p[1] is None:
-            p[1] = 0
-        p[0] = int(p[1]) + int(p[2])
+        if p[1] is None: # at the beginning of the list
+            p[1] = []
+        p[0] = p[1] + [p[2]]
 
 def p_terminal(p):
     '''terminal : ATOM
@@ -59,7 +72,6 @@ def p_terminal(p):
     elif p[1] == '#f':
         print(False)
     else:
-        print('operand: %s' % p[1])
         p[0] = p[1]
 
 def p_empty(p):
