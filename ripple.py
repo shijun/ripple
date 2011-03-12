@@ -31,16 +31,13 @@ lexer = lex.lex()
 
 def p_expression(p):
     '''expression : expression list
-                  | expression terminal
+                  | terminal
                   | empty'''
 
 def p_list(p):
-    '''list : '(' operator expression ')' '''
+    '''list : '(' ATOM expression ')' '''
+    print('operation: %s' % p[2])
     p[0] = p[3]
-
-def p_operator(p):
-    '''operator : ATOM'''
-    print('operation: %s' % p[1])
 
 def p_terminal(p):
     '''terminal : ATOM
