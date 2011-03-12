@@ -3,6 +3,7 @@
 tokens = (
     'STRING',
     'ATOM',
+    'BOOL',
     'NUMBER',
 )
 
@@ -12,6 +13,8 @@ t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 # any number of letters, digits, or symbols.
 symbol = r'[!$%&|*+-/:<=>?@^_~]'
 t_ATOM = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
+
+t_BOOL = r'\#[tf]'
 
 t_NUMBER = r'\d+|\#b[01]+|\#o[0-7]+|\#d\d+|\#x[\dA-Fa-f]+'
 
@@ -28,9 +31,15 @@ lexer = lex.lex()
 
 def p_expression(p):
     '''expression : ATOM
+                  | BOOL
                   | STRING
                   | NUMBER'''
-    print(p[1])
+    if p[1] == '#t':
+        print(True)
+    elif p[1] == '#f':
+        print(False)
+    else:
+        print(p[1])
 
 def p_error(p):
     print('Syntax error: %s' % p.value)
