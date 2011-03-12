@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 
 tokens = (
-    'SYMBOL',
     'STRING',
     'ATOM',
     'NUMBER',
 )
 
-t_SYMBOL = r'[!$%&|*+-/:<=>?@^_~]'
-
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
-t_ATOM = r'([A-Za-z]|' + t_SYMBOL + r')' + \
-         r'(\w*|' + t_SYMBOL + r'*)'
+symbol = r'[!$%&|*+-/:<=>?@^_~]'
+t_ATOM = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
 
 t_NUMBER = r'\d+|\#b[01]+|\#o[0-7]+|\#d\d+|\#x[\dA-Fa-f]+'
 
