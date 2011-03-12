@@ -30,14 +30,24 @@ import ply.lex as lex
 lexer = lex.lex()
 
 def p_expression(p):
-    '''expression : expression list
+    '''expression : list
                   | terminal
                   | empty'''
+    p[0] = p[1]
 
 def p_list(p):
-    '''list : '(' ATOM expression ')' '''
+    '''list : '(' ATOM operands ')' '''
     print('operation: %s' % p[2])
     p[0] = p[3]
+
+def p_operands(p):
+    '''operands : operands terminal
+                | operands list
+                | empty'''
+    if len(p) == 3:
+        if p[1] is None:
+            p[1] = 0
+        p[0] = int(p[1]) + int(p[2])
 
 def p_terminal(p):
     '''terminal : ATOM
@@ -50,6 +60,7 @@ def p_terminal(p):
         print(False)
     else:
         print('operand: %s' % p[1])
+        p[0] = p[1]
 
 def p_empty(p):
     '''empty :'''
@@ -63,5 +74,5 @@ yacc.yacc()
 
 if __name__ == '__main__':
     from sys import argv
-    yacc.parse(argv[1])
+    print(yacc.parse(argv[1]))
 
