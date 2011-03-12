@@ -20,6 +20,8 @@ t_NUMBER = r'\d+|\#b[01]+|\#o[0-7]+|\#d\d+|\#x[\dA-Fa-f]+'
 
 t_ignore = ' '
 
+literals = '()'
+
 def t_error(t):
     print('Illegal character: %s' % t.value[0])
     t.lexer.skip(1)
@@ -27,10 +29,19 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
+def p_expression(p):
+    '''expression : ATOM
+                  | STRING
+                  | NUMBER'''
+    print(p[1])
+
+def p_error(p):
+    print('Syntax error: %s' % p.value)
+
+import ply.yacc as yacc
+yacc.yacc()
+
 if __name__ == '__main__':
     from sys import argv
-    lexer.input(argv[1])
-
-    for token in lexer:
-        print('Found value')
+    yacc.parse(argv[1])
 
