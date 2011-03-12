@@ -14,7 +14,13 @@ t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 symbol = r'[!$%&|*+-/:<=>?@^_~]'
 t_ATOM = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
 
-t_BOOL = r'\#[tf]'
+def t_BOOL(t):
+    r'\#[tf]'
+    if t.value == '#t':
+        t.value = True
+    else: # t.value == '#f'
+        t.value = False
+    return t
 
 def t_NUMBER(t):
     r'\d+'
@@ -67,12 +73,7 @@ def p_terminal(p):
                 | BOOL
                 | STRING
                 | NUMBER'''
-    if p[1] == '#t':
-        print(True)
-    elif p[1] == '#f':
-        print(False)
-    else:
-        p[0] = p[1]
+    p[0] = p[1]
 
 def p_empty(p):
     '''empty :'''
