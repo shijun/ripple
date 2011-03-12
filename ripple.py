@@ -35,8 +35,12 @@ def p_expression(p):
                   | empty'''
 
 def p_list(p):
-    '''list : '(' expression ')' '''
-    p[0] = p[2]
+    '''list : '(' operator expression ')' '''
+    p[0] = p[3]
+
+def p_operator(p):
+    '''operator : ATOM'''
+    print('operation: %s' % p[1])
 
 def p_terminal(p):
     '''terminal : ATOM
@@ -48,7 +52,7 @@ def p_terminal(p):
     elif p[1] == '#f':
         print(False)
     else:
-        print(p[1])
+        print('operand: %s' % p[1])
 
 def p_empty(p):
     '''empty :'''
