@@ -85,7 +85,22 @@ def p_error(p):
 import ply.yacc as yacc
 yacc.yacc()
 
+def parse(program):
+    """Parse a valid Scheme program.
+
+    >>> parse('(+ 2 2)')
+    4
+
+    >>> parse('(- 7 9)')
+    -2
+
+    >>> parse('(+ 3 7 (- 4 2 5) (* 4 5 9) 2 (/ 9 3))')
+    192
+    """
+
+    return yacc.parse(program)
+
 if __name__ == '__main__':
-    from sys import argv
-    print(yacc.parse(argv[1]))
+    import doctest
+    doctest.testmod()
 
