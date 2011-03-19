@@ -27,7 +27,7 @@ def t_NUMBER(t):
     t.value = int(t.value)
     return t
 
-t_ignore = ' '
+t_ignore = ' \t\n'
 
 literals = '()'
 
@@ -88,17 +88,15 @@ yacc.yacc()
 def parse(program):
     """Parse a valid Scheme program.
 
-    >>> parse('(+ 2 2)')
+    >>> parse('simple.scm')
     4
 
-    >>> parse('(- 7 9)')
-    -2
-
-    >>> parse('(+ 3 7 (- 4 2 5) (* 4 5 9) 2 (/ 9 3))')
+    >>> parse('many-terms.scm')
     192
     """
 
-    return yacc.parse(program)
+    with open(program) as file:
+        return yacc.parse(file.read())
 
 if __name__ == '__main__':
     import doctest
