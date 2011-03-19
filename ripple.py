@@ -38,6 +38,8 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
+variables = {}
+
 def p_expression(p):
     '''expression : list
                   | terminal
@@ -49,7 +51,11 @@ def p_list(p):
     from operator import add, sub, mul, div
     from functools import reduce
 
-    if p[2] == '+':
+    if p[2] == 'define':
+        name, value = p[3]
+        variables[name] = value
+        p[0] = value
+    elif p[2] == '+':
         p[0] = reduce(add, p[3])
     elif p[2] == '-':
         p[0] = reduce(sub, p[3])
@@ -92,7 +98,10 @@ def parse(program):
     4
 
     >>> parse('many-terms.scm')
-    192
+    372
+
+    >>> parse('variable.scm')
+    10
     """
 
     with open(program) as file:
