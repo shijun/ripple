@@ -1,18 +1,30 @@
 #!/usr/bin/env python
 
-tokens = (
+from ply.lex import TOKEN
+
+tokens = [
     'STRING',
     'ATOM',
     'BOOL',
     'NUMBER',
-)
+]
 
-t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
+reserved = {
+   'define': 'DEFINE',
+}
+
+tokens += reserved.values()
 
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
 symbol = r'[!$%&|*+-/:<=>?@^_~]'
-t_ATOM = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
+identifier = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
+@TOKEN(identifier)
+def t_ATOM(t):
+    t.type = reserved.get(t.value, 'ATOM') # check for reserved words
+    return t
+
+t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
 def t_BOOL(t):
     r'\#[tf]'
@@ -41,21 +53,26 @@ lexer = lex.lex()
 variables = {}
 
 def p_expression(p):
-    '''expression : list
-                  | terminal
-                  | empty'''
-    p[0] = p[1]
+    '''expression : expression list
+                  | list
+                  | terminal'''
+    if len(p) == 3:
+        p[0] = p[2]
+    else:
+        p[0] = p[1]
 
-def p_list(p):
+def p_list_define(p):
+    '''list : '(' DEFINE ATOM terminal ')' '''
+    name = p[3]
+    variables[name] = p[4]
+    p[0] = p[4]
+
+def p_list_arithmetic(p):
     '''list : '(' ATOM operands ')' '''
     from operator import add, sub, mul, div
     from functools import reduce
 
-    if p[2] == 'define':
-        name, value = p[3]
-        variables[name] = value
-        p[0] = value
-    elif p[2] == '+':
+    if   p[2] == '+':
         p[0] = reduce(add, p[3])
     elif p[2] == '-':
         p[0] = reduce(sub, p[3])
@@ -75,11 +92,14 @@ def p_operands(p):
         p[0] = p[1] + [p[2]]
 
 def p_terminal(p):
-    '''terminal : ATOM
-                | BOOL
+    '''terminal : BOOL
                 | STRING
                 | NUMBER'''
     p[0] = p[1]
+
+def p_terminal_atom(p):
+    '''terminal : ATOM'''
+    p[0] = variables[p[1]]
 
 def p_empty(p):
     '''empty :'''
