@@ -55,7 +55,7 @@ states = (
 )
 
 def t_code(t):
-    r"'\("
+    r"'\(|\(lambda\s+\(\)\s+\("
     t.lexer.start = t.lexer.lexpos - 1
     t.lexer.level = 1
     t.lexer.push_state('code')
@@ -97,9 +97,9 @@ def p_expression(p):
         p[0] = p[1]
 
 def p_list_define(p):
-    '''list : '(' DEFINE ATOM terminal ')' '''
-    name = p[3]
-    variables[name] = p[4]
+    '''list : '(' DEFINE ATOM terminal ')'
+            | '(' DEFINE ATOM CODE ')' ')' '''
+    variables[p[3]] = p[4]
     p[0] = p[4]
 
 def p_list_arithmetic(p):
@@ -160,6 +160,9 @@ def parse(program):
 
     >>> parse('quote.scm')
     '(3 2 1)'
+
+    >>> parse('function.scm')
+    '(+ 8 6)'
     """
 
     with open(program) as file:
