@@ -7,6 +7,7 @@ tokens = [
     'ATOM',
     'BOOL',
     'NUMBER',
+    'CODE',
 ]
 
 reserved = {
@@ -47,6 +48,39 @@ def t_error(t):
     print('Illegal character: %s' % t.value[0])
     t.lexer.skip(1)
 
+# --- quoting lexer code is below ---
+
+states = (
+    ('code', 'exclusive'),
+)
+
+def t_code(t):
+    r"'\("
+    t.lexer.start = t.lexer.lexpos - 1
+    t.lexer.level = 1
+    t.lexer.push_state('code')
+
+def t_code_left(t):     
+    r'\('
+    t.lexer.level += 1
+
+def t_code_right(t):
+    r'\)'
+    t.lexer.level -= 1
+
+    if t.lexer.level == 0:
+         t.value = t.lexer.lexdata[t.lexer.start:t.lexer.lexpos]
+         t.type = 'CODE'
+         t.lexer.pop_state()
+         return t
+
+t_code_ignore = ''
+
+def t_code_error(t):
+    t.lexer.skip(1)
+
+# --- quoting lexer code ends ---
+
 import ply.lex as lex
 lexer = lex.lex()
 
@@ -55,6 +89,7 @@ variables = {}
 def p_expression(p):
     '''expression : expression list
                   | list
+                  | CODE
                   | terminal'''
     if len(p) == 3:
         p[0] = p[2]
@@ -122,6 +157,9 @@ def parse(program):
 
     >>> parse('variable.scm')
     10
+
+    >>> parse('quote.scm')
+    '(3 2 1)'
     """
 
     with open(program) as file:
