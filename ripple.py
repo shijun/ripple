@@ -126,12 +126,15 @@ def evaluate(expression):
 def p_expression(p):
     '''expression : expression list
                   | empty
-                  | CODE
-                  | terminal'''
+                  | CODE'''
     if len(p) == 3:
         p[0] = evaluate(p[2])
     else:
         p[0] = p[1]
+
+def p_expression_single(p):
+    '''expression : terminal'''
+    p[0] = evaluate(p[1])
 
 def p_list(p):
     '''list : '(' elements ')' '''
@@ -166,6 +169,9 @@ yacc.yacc()
 
 def parse(program):
     """Parse a valid Scheme program.
+
+    >>> parse('terminal.scm')
+    42
 
     >>> parse('simple.scm')
     4
