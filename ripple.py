@@ -10,20 +10,11 @@ tokens = [
     'CODE',
 ]
 
-reserved = {
-   'define': 'DEFINE',
-}
-
-tokens += reserved.values()
-
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
 symbol = r'[!$%&|*+-/:<=>?@^_~]'
 identifier = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
-@TOKEN(identifier)
-def t_ATOM(t):
-    t.type = reserved.get(t.value, 'ATOM') # check for reserved words
-    return t
+t_ATOM = identifier
 
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
@@ -55,7 +46,8 @@ states = (
 )
 
 def t_code(t):
-    r"'\(|\(lambda\s+\(\)\s+\("
+    #r"'\(|\(lambda\s+\(\)\s+\("
+    r"'\("
     t.lexer.start = t.lexer.lexpos - 1
     t.lexer.level = 1
     t.lexer.push_state('code')
@@ -84,41 +76,70 @@ def t_code_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
-variables = {}
+bindings = dict()
+
+def evaluate(expression):
+    if   isinstance(expression, str): # variable
+        return bindings[expression]
+    elif isinstance(expression, int):
+        return expression
+
+    if expression[0] == 'define':
+        if isinstance(expression[1], list):
+            # defining a function
+            name = expression[1][0]
+            parameters = expression[1][1:]
+            body = expression[2]
+            bindings[name] = (parameters, body)
+        else:
+            # defining a variable
+            bindings[expression[1]] = expression[2]
+        return None
+
+    # User-defined functions and primitives are below.
+    # Their parameters are evaluated.
+    head = expression[0]
+    tail = [evaluate(item) for item in expression[1:]]
+
+    # Call the function if it's defined by the user.
+    try:
+        # FIXME: need to pass the parameters to the function
+        return evaluate(bindings[head][1])
+    except KeyError:
+        pass
+
+    # primitives
+    from functools import reduce
+    from operator import add, sub, mul, div
+
+    if   head == '+':
+        return reduce(add, tail)
+    elif head == '-':
+        return reduce(sub, tail)
+    elif head == '*':
+        return reduce(mul, tail)
+    elif head == '/':
+        return reduce(div, tail)
+
+    raise SyntaxError
 
 def p_expression(p):
     '''expression : expression list
-                  | list
+                  | empty
                   | CODE
                   | terminal'''
     if len(p) == 3:
-        p[0] = p[2]
+        p[0] = evaluate(p[2])
     else:
         p[0] = p[1]
 
-def p_list_define(p):
-    '''list : '(' DEFINE ATOM terminal ')'
-            | '(' DEFINE ATOM CODE ')' ')' '''
-    variables[p[3]] = p[4]
-    p[0] = p[4]
+def p_list(p):
+    '''list : '(' elements ')' '''
+    p[0] = p[2]
 
-def p_list_arithmetic(p):
-    '''list : '(' ATOM operands ')' '''
-    from operator import add, sub, mul, div
-    from functools import reduce
-
-    if   p[2] == '+':
-        p[0] = reduce(add, p[3])
-    elif p[2] == '-':
-        p[0] = reduce(sub, p[3])
-    elif p[2] == '*':
-        p[0] = reduce(mul, p[3])
-    elif p[2] == '/':
-        p[0] = reduce(div, p[3])
-
-def p_operands(p):
-    '''operands : operands terminal
-                | operands list
+def p_elements(p):
+    '''elements : elements terminal
+                | elements list
                 | empty'''
     # the following is a left unfold [i.e. opposite of foldl()]
     if len(p) == 3:
@@ -129,12 +150,9 @@ def p_operands(p):
 def p_terminal(p):
     '''terminal : BOOL
                 | STRING
-                | NUMBER'''
+                | NUMBER
+                | ATOM'''
     p[0] = p[1]
-
-def p_terminal_atom(p):
-    '''terminal : ATOM'''
-    p[0] = variables[p[1]]
 
 def p_empty(p):
     '''empty :'''
@@ -162,7 +180,7 @@ def parse(program):
     '(3 2 1)'
 
     >>> parse('function.scm')
-    '(+ 8 6)'
+    14
     """
 
     with open(program) as file:

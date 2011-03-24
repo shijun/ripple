@@ -1,1 +1,2 @@
-(define func (lambda () (+ 8 6)))
+(define (func) (+ 8 6))
+(func)
