@@ -3,11 +3,11 @@
 from ply.lex import TOKEN
 
 tokens = [
-    'STRING',
     'ATOM',
+    'STRING',
+    'QUOTE',
     'BOOL',
     'NUMBER',
-    'CODE',
 ]
 
 # An atom is a letter or symbol, followed by
@@ -17,6 +17,8 @@ identifier = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
 t_ATOM = identifier
 
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
+
+t_QUOTE = r"'"
 
 def t_BOOL(t):
     r'\#[tf]'
@@ -38,40 +40,6 @@ literals = '()'
 def t_error(t):
     print('Illegal character: %s' % t.value[0])
     t.lexer.skip(1)
-
-# --- quoting lexer code is below ---
-
-states = (
-    ('code', 'exclusive'),
-)
-
-def t_code(t):
-    #r"'\(|\(lambda\s+\(\)\s+\("
-    r"'\("
-    t.lexer.start = t.lexer.lexpos - 1
-    t.lexer.level = 1
-    t.lexer.push_state('code')
-
-def t_code_left(t):     
-    r'\('
-    t.lexer.level += 1
-
-def t_code_right(t):
-    r'\)'
-    t.lexer.level -= 1
-
-    if t.lexer.level == 0:
-         t.value = t.lexer.lexdata[t.lexer.start:t.lexer.lexpos]
-         t.type = 'CODE'
-         t.lexer.pop_state()
-         return t
-
-t_code_ignore = ''
-
-def t_code_error(t):
-    t.lexer.skip(1)
-
-# --- quoting lexer code ends ---
 
 import ply.lex as lex
 lexer = lex.lex()
@@ -95,6 +63,10 @@ def evaluate(expression):
             # defining a variable
             bindings[expression[1]] = expression[2]
         return None
+
+    if expression[0] == 'quote':
+        tail = [str(item) for item in expression[1:]]
+        return '({0})'.format(' '.join(tail))
 
     # User-defined functions and primitives are below.
     # Their parameters are evaluated.
@@ -125,20 +97,24 @@ def evaluate(expression):
 
 def p_expression(p):
     '''expression : expression list
-                  | empty
-                  | CODE'''
+                  | empty'''
     if len(p) == 3:
         p[0] = evaluate(p[2])
     else:
         p[0] = p[1]
 
 def p_expression_single(p):
-    '''expression : terminal'''
+    '''expression : terminal
+                  | quote'''
     p[0] = evaluate(p[1])
 
 def p_list(p):
     '''list : '(' elements ')' '''
     p[0] = p[2]
+
+def p_quote(p):
+    '''quote : QUOTE '(' elements ')' '''
+    p[0] = ['quote'] + p[3]
 
 def p_elements(p):
     '''elements : elements terminal
