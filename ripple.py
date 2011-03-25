@@ -11,7 +11,7 @@ tokens = [
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
 symbol = '!$%&|*+-/:<=>?@^_~'
-t_ATOM = r'([A-Za-z{0}])'.format(symbol) + r'([\w{0}])*'.format(symbol)
+t_ATOM = r'[A-Za-z{0}]'.format(symbol) + r'[\w{0}]*'.format(symbol)
 
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
