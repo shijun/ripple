@@ -68,10 +68,10 @@ def evaluate(expression, bindings):
         consequence = expression[2]
         alternative = expression[3]
 
-        if evaluate(predicate, bindings) == '#t':
-            return evaluate(consequence, bindings)
-        else:
+        if evaluate(predicate, bindings) == '#f':
             return evaluate(alternative, bindings)
+        else:
+            return evaluate(consequence, bindings)
 
     if expression[0] == 'quote':
         tail = [str(item) for item in expression[1:]]
