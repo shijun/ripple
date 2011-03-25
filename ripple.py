@@ -44,7 +44,9 @@ import ply.lex as lex
 lexer = lex.lex()
 
 def evaluate(expression, bindings):
-    if   isinstance(expression, str): # variable
+    if   expression is None:
+        return None
+    elif isinstance(expression, str): # variable
         return bindings[expression]
     elif isinstance(expression, int):
         return expression
@@ -118,16 +120,14 @@ toplevel = dict()
 
 def p_expression(p):
     '''expression : expression list
+                  | terminal
+                  | quote
                   | empty'''
+
     if len(p) == 3:
         p[0] = evaluate(p[2], toplevel)
     else:
-        p[0] = p[1]
-
-def p_expression_single(p):
-    '''expression : terminal
-                  | quote'''
-    p[0] = evaluate(p[1], toplevel)
+        p[0] = evaluate(p[1], toplevel)
 
 def p_list(p):
     '''list : '(' elements ')' '''
