@@ -95,8 +95,8 @@ def evaluate(expression, bindings):
         return reduce(mul, tail)
     elif head == '/':
         return reduce(div, tail)
-
-    raise SyntaxError
+    elif head == '=':
+        return '#t' if tail[0] == tail[1] else '#f'
 
 toplevel = dict()
 
@@ -171,6 +171,9 @@ def parse(program):
 
     >>> parse('parameters.scm')
     6
+
+    >>> parse('equal.scm')
+    '#f'
     """
 
     with open(program) as file:
