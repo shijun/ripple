@@ -12,9 +12,8 @@ tokens = [
 
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
-symbol = r'[!$%&|*+-/:<=>?@^_~]'
-identifier = r'([A-Za-z]|%s)' % symbol + r'(\w|%s)*' % symbol
-t_ATOM = identifier
+symbol = '!$%&|*+-/:<=>?@^_~'
+t_ATOM = r'([A-Za-z{0}])'.format(symbol) + r'([\w{0}])*'.format(symbol)
 
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
@@ -53,10 +52,10 @@ def evaluate(expression, bindings):
     if expression[0] == 'define':
         if isinstance(expression[1], list):
             # defining a function
-            name = expression[1][0]
             function = dict()
             function['parameters'] = expression[1][1:]
             function['body'] = expression[2:]
+            name = expression[1][0]
             bindings[name] = function
         else:
             # defining a variable
