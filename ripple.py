@@ -57,6 +57,7 @@ def evaluate(expression, bindings):
             function['body'] = expression[2:]
             name = expression[1][0]
             bindings[name] = function
+            function['closure'] = bindings.copy()
         else:
             # defining a variable
             bindings[expression[1]] = expression[2]
@@ -86,8 +87,7 @@ def evaluate(expression, bindings):
         function = bindings[head]
         arguments = zip(function['parameters'], tail)
 
-        from copy import deepcopy
-        closure = deepcopy(bindings)
+        closure = function['closure'].copy()
         closure.update(arguments)
 
         result = None
@@ -199,7 +199,9 @@ def parse(program):
     """
 
     with open(program) as file:
-        return yacc.parse(file.read())
+        result = yacc.parse(file.read())
+        toplevel.clear()
+        return result
 
 if __name__ == '__main__':
     import doctest
