@@ -63,6 +63,16 @@ def evaluate(expression, bindings):
             bindings[expression[1]] = expression[2]
         return None
 
+    if expression[0] == 'if':
+        predicate = expression[1]
+        consequence = expression[2]
+        alternative = expression[3]
+
+        if evaluate(predicate, bindings) == '#t':
+            return evaluate(consequence, bindings)
+        else:
+            return evaluate(alternative, bindings)
+
     if expression[0] == 'quote':
         tail = [str(item) for item in expression[1:]]
         return '({0})'.format(' '.join(tail))
@@ -174,6 +184,9 @@ def parse(program):
 
     >>> parse('equal.scm')
     '#f'
+
+    >>> parse('if.scm')
+    9
     """
 
     with open(program) as file:
