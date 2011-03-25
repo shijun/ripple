@@ -44,9 +44,7 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
-bindings = dict()
-
-def evaluate(expression):
+def evaluate(expression, bindings):
     if   isinstance(expression, str): # variable
         return bindings[expression]
     elif isinstance(expression, int):
@@ -56,9 +54,10 @@ def evaluate(expression):
         if isinstance(expression[1], list):
             # defining a function
             name = expression[1][0]
-            parameters = expression[1][1:]
-            body = expression[2]
-            bindings[name] = (parameters, body)
+            function = dict()
+            function['parameters'] = expression[1][1:]
+            function['body'] = expression[2]
+            bindings[name] = function
         else:
             # defining a variable
             bindings[expression[1]] = expression[2]
@@ -71,14 +70,18 @@ def evaluate(expression):
     # User-defined functions and primitives are below.
     # Their parameters are evaluated.
     head = expression[0]
-    tail = [evaluate(item) for item in expression[1:]]
+    tail = [evaluate(item, bindings) for item in expression[1:]]
 
     # Call the function if it's defined by the user.
-    try:
-        # FIXME: need to pass the parameters to the function
-        return evaluate(bindings[head][1])
-    except KeyError:
-        pass
+    if head in bindings:
+        function = bindings[head]
+        arguments = zip(function['parameters'], tail)
+
+        from copy import deepcopy
+        closure = deepcopy(bindings)
+        closure.update(arguments)
+
+        return evaluate(function['body'], closure)
 
     # primitives
     from functools import reduce
@@ -95,18 +98,20 @@ def evaluate(expression):
 
     raise SyntaxError
 
+toplevel = dict()
+
 def p_expression(p):
     '''expression : expression list
                   | empty'''
     if len(p) == 3:
-        p[0] = evaluate(p[2])
+        p[0] = evaluate(p[2], toplevel)
     else:
         p[0] = p[1]
 
 def p_expression_single(p):
     '''expression : terminal
                   | quote'''
-    p[0] = evaluate(p[1])
+    p[0] = evaluate(p[1], toplevel)
 
 def p_list(p):
     '''list : '(' elements ')' '''
@@ -163,6 +168,9 @@ def parse(program):
 
     >>> parse('function.scm')
     14
+
+    >>> parse('parameters.scm')
+    6
     """
 
     with open(program) as file:
