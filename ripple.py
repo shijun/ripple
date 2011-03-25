@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from ply.lex import TOKEN
-
 tokens = [
     'ATOM',
     'STRING',
