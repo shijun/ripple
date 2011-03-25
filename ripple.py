@@ -56,7 +56,7 @@ def evaluate(expression, bindings):
             name = expression[1][0]
             function = dict()
             function['parameters'] = expression[1][1:]
-            function['body'] = expression[2]
+            function['body'] = expression[2:]
             bindings[name] = function
         else:
             # defining a variable
@@ -91,7 +91,10 @@ def evaluate(expression, bindings):
         closure = deepcopy(bindings)
         closure.update(arguments)
 
-        return evaluate(function['body'], closure)
+        result = None
+        for statement in function['body']:
+            result = evaluate(statement, closure)
+        return result
 
     # primitives
     from functools import reduce
@@ -107,6 +110,10 @@ def evaluate(expression, bindings):
         return reduce(div, tail)
     elif head == '=':
         return '#t' if tail[0] == tail[1] else '#f'
+    elif head == '>':
+        return '#t' if tail[0] > tail[1] else '#f'
+    elif head == '<':
+        return '#t' if tail[0] < tail[1] else '#f'
 
 toplevel = dict()
 
@@ -187,6 +194,9 @@ def parse(program):
 
     >>> parse('if.scm')
     9
+
+    >>> parse('factorial.scm')
+    120
     """
 
     with open(program) as file:
