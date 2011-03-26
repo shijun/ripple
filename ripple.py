@@ -53,10 +53,10 @@ def evaluate(expression, bindings):
         if isinstance(expression[1], list):
             # defining a function
             function = dict()
-            function['parameters'] = expression[1][1:]
-            function['body'] = expression[2:]
             name = expression[1][0]
             bindings[name] = function
+            function['parameters'] = expression[1][1:]
+            function['body'] = expression[2:]
             function['closure'] = bindings.copy()
         else:
             # defining a variable
