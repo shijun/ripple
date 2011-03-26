@@ -86,13 +86,11 @@ def evaluate(expression, bindings):
     if head in bindings:
         function = bindings[head]
         arguments = zip(function['parameters'], tail)
-
-        closure = function['closure'].copy()
-        closure.update(arguments)
+        function['closure'].update(arguments)
 
         result = None
         for statement in function['body']:
-            result = evaluate(statement, closure)
+            result = evaluate(statement, function['closure'])
         return result
 
     # primitives
