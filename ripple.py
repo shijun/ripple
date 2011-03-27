@@ -41,6 +41,9 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
+def define_variable(name, value, bindings):
+    bindings[name] = evaluate(value, bindings)
+
 def define_function(parameters, body, bindings):
     function = dict()
     function['parameters'] = parameters
@@ -67,9 +70,11 @@ def evaluate(expression, bindings):
             bindings[name] = function
             function['closure'][name] = function
         else:
-            # defining a variable
-            bindings[expression[1]] = evaluate(expression[2], bindings)
+            define_variable(expression[1], expression[2], bindings)
         return None
+
+    if expression[0] == 'set!':
+        define_variable(expression[1], expression[2], bindings)
 
     if expression[0] == 'if':
         predicate = expression[1]
@@ -207,6 +212,9 @@ def parse(program):
 
     >>> parse('lambda.scm')
     35
+
+    >>> parse('counter.scm')
+    19
     """
 
     with open(program) as file:
