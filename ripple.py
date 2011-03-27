@@ -41,6 +41,13 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
+def define_function(parameters, body, bindings):
+    function = dict()
+    function['parameters'] = parameters
+    function['body'] = body
+    function['closure'] = bindings.copy()
+    return function
+
 def evaluate(expression, bindings):
     if   expression is None:
         return None
@@ -49,18 +56,19 @@ def evaluate(expression, bindings):
     elif isinstance(expression, int):
         return expression
 
+    if expression[0] == 'lambda':
+        return define_function(expression[1], expression[2:], bindings)
+
     if expression[0] == 'define':
         if isinstance(expression[1], list):
-            # defining a function
-            function = dict()
+            function = define_function(expression[1][1:],
+                                       expression[2:], bindings)
             name = expression[1][0]
             bindings[name] = function
-            function['parameters'] = expression[1][1:]
-            function['body'] = expression[2:]
-            function['closure'] = bindings.copy()
+            function['closure'][name] = function
         else:
             # defining a variable
-            bindings[expression[1]] = expression[2]
+            bindings[expression[1]] = evaluate(expression[2], bindings)
         return None
 
     if expression[0] == 'if':
@@ -129,6 +137,10 @@ def p_list(p):
     '''list : '(' elements ')' '''
     p[0] = p[2]
 
+def p_list_empty(p):
+    '''list : '(' ')' '''
+    p[0] = []
+
 def p_quote(p):
     '''quote : QUOTE '(' elements ')' '''
     p[0] = ['quote'] + p[3]
@@ -192,6 +204,9 @@ def parse(program):
 
     >>> parse('factorial.scm')
     120
+
+    >>> parse('lambda.scm')
+    35
     """
 
     with open(program) as file:
