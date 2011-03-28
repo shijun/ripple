@@ -1,45 +1,9 @@
 #!/usr/bin/env python
 
-tokens = [
-    'ATOM',
-    'STRING',
-    'QUOTE',
-    'BOOL',
-    'NUMBER',
-]
-
-# An atom is a letter or symbol, followed by
-# any number of letters, digits, or symbols.
-symbol = '!$%&|*+-/:<=>?@^_~'
-t_ATOM = r'[A-Za-z{0}]'.format(symbol) + r'[\w{0}]*'.format(symbol)
-
-t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
-
-t_QUOTE = r"'"
-
-def t_BOOL(t):
-    r'\#[tf]'
-    if t.value == '#t':
-        t.value = True
-    else: # t.value == '#f'
-        t.value = False
-    return t
-
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)
-    return t
-
-t_ignore = ' \t\n'
-
-literals = '()'
-
-def t_error(t):
-    print('Illegal character: %s' % t.value[0])
-    t.lexer.skip(1)
-
+import lexer
+from lexer import tokens
 import ply.lex as lex
-lexer = lex.lex()
+lex.lex(module=lexer)
 
 def define_variable(name, value, bindings):
     bindings[name] = evaluate(value, bindings)
