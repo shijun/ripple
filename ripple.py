@@ -75,6 +75,7 @@ def evaluate(expression, bindings):
 
     if expression[0] == 'set!':
         define_variable(expression[1], expression[2], bindings)
+        return None
 
     if expression[0] == 'if':
         predicate = expression[1]
@@ -90,21 +91,10 @@ def evaluate(expression, bindings):
         tail = [str(item) for item in expression[1:]]
         return '({0})'.format(' '.join(tail))
 
-    # User-defined functions and primitives are below.
+    # Primitives and user-defined functions are below.
     # Their parameters are evaluated.
     head = expression[0]
     tail = [evaluate(item, bindings) for item in expression[1:]]
-
-    # Call the function if it's defined by the user.
-    if head in bindings:
-        function = bindings[head]
-        arguments = zip(function['parameters'], tail)
-        function['closure'].update(arguments)
-
-        result = None
-        for statement in function['body']:
-            result = evaluate(statement, function['closure'])
-        return result
 
     # primitives
     from functools import reduce
@@ -124,6 +114,16 @@ def evaluate(expression, bindings):
         return '#t' if tail[0] > tail[1] else '#f'
     elif head == '<':
         return '#t' if tail[0] < tail[1] else '#f'
+
+    # user-defined function
+    function = bindings[head]
+    arguments = zip(function['parameters'], tail)
+    function['closure'].update(arguments)
+
+    result = None
+    for statement in function['body']:
+        result = evaluate(statement, function['closure'])
+    return result
 
 toplevel = dict()
 
