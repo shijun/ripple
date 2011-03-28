@@ -180,41 +180,6 @@ yacc.yacc()
 def parse(program):
     """Parse a valid Scheme program.
 
-    >>> parse('terminal.scm')
-    42
-
-    >>> parse('simple.scm')
-    4
-
-    >>> parse('many-terms.scm')
-    372
-
-    >>> parse('variable.scm')
-    10
-
-    >>> parse('quote.scm')
-    '(3 2 1)'
-
-    >>> parse('function.scm')
-    14
-
-    >>> parse('parameters.scm')
-    6
-
-    >>> parse('equal.scm')
-    '#f'
-
-    >>> parse('if.scm')
-    9
-
-    >>> parse('factorial.scm')
-    120
-
-    >>> parse('lambda.scm')
-    35
-
-    >>> parse('counter.scm')
-    19
     """
 
     with open(program) as file:
@@ -223,6 +188,6 @@ def parse(program):
         return result
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    from doctest import testfile
+    testfile('tests/README')
 
