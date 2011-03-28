@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-def parse(program):
-    """Parse a valid Scheme program.
-
-    """
+def run(program):
+    """Run a valid Scheme program."""
 
     with open(program) as file:
         from parse import parse

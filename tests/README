@@ -1,43 +1,43 @@
 >>> import sys
 >>> sys.path.append('.')
->>> from ripple import parse
+>>> from ripple import run
 
 >>> from os import chdir
 >>> chdir('tests')
 
->>> parse('terminal.scm')
+>>> run('terminal.scm')
 42
 
->>> parse('simple.scm')
+>>> run('simple.scm')
 4
 
->>> parse('many-terms.scm')
+>>> run('many-terms.scm')
 372
 
->>> parse('variable.scm')
+>>> run('variable.scm')
 10
 
->>> parse('quote.scm')
+>>> run('quote.scm')
 '(3 2 1)'
 
->>> parse('function.scm')
+>>> run('function.scm')
 14
 
->>> parse('parameters.scm')
+>>> run('parameters.scm')
 6
 
->>> parse('equal.scm')
+>>> run('equal.scm')
 '#f'
 
->>> parse('if.scm')
+>>> run('if.scm')
 9
 
->>> parse('factorial.scm')
+>>> run('factorial.scm')
 120
 
->>> parse('lambda.scm')
+>>> run('lambda.scm')
 35
 
->>> parse('counter.scm')
+>>> run('counter.scm')
 19
 
