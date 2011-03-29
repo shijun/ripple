@@ -1,41 +1,55 @@
+Get the necessary things set up first.
 >>> from ripple import run
-
 >>> from os import chdir
 >>> chdir('tests')
 
+A number should evaluate to itself.
 >>> run('terminal.scm')
 42
 
+2 + 2 = 4. :)
 >>> run('simple.scm')
 4
 
+This is to make sure that deeply-nested evaluation works.
 >>> run('many-terms.scm')
 372
 
+Simple variable assignment.
 >>> run('variable.scm')
 10
 
+This is to only test quoting lists.
 >>> run('quote.scm')
 '(3 2 1)'
 
+A simple no-parameter function.
 >>> run('function.scm')
 14
 
+This function has two parameters.
 >>> run('parameters.scm')
 6
 
+Just to see if the equal primitive works.
 >>> run('equal.scm')
 '#f'
 
+The venerable if statement. :)
 >>> run('if.scm')
 9
 
+Calculate the factorial of 5. Should be useful for something. ;)
+(This code was taken from SICP, p. 33)
 >>> run('factorial.scm')
 120
 
+The glorious lambda!
 >>> run('lambda.scm')
 35
 
+The following was taken from Jonathan Tang's "Write Yourself a Scheme in 48
+Hours" at the end of chapter 8 "Defining Scheme Functions".
 >>> run('counter.scm')
 19
 
