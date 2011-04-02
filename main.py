@@ -5,7 +5,10 @@ def run(program):
         from parse import parse
         return parse(file.read())
 
-def main():
-    from doctest import testfile
-    testfile('tests/README')
+def main(file=None):
+    if file is not None:
+        print(run(file))
+    else:
+        from doctest import testfile
+        testfile('tests/README')
 
