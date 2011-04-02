@@ -1,5 +1,5 @@
 Get the necessary things set up first.
->>> from ripple import run
+>>> from main import run
 >>> from os import chdir
 >>> chdir('tests')
 
