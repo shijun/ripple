@@ -49,7 +49,7 @@ def p_empty(p):
     pass
 
 def p_error(p):
-    print('Syntax error: %s' % p.value)
+    print('Syntax error: %s'.format(p.value))
 
 def parse(source):
     import ply.yacc as yacc
