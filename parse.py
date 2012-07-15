@@ -19,10 +19,6 @@ def p_list(p):
     '''list : '(' elements ')' '''
     p[0] = p[2]
 
-def p_list_empty(p):
-    '''list : '(' ')' '''
-    p[0] = []
-
 def p_quote(p):
     '''quote : QUOTE '(' elements ')' '''
     p[0] = ['quote'] + p[3]
@@ -36,6 +32,8 @@ def p_elements(p):
         if p[1] is None: # at the beginning of the list
             p[1] = []
         p[0] = p[1] + [p[2]]
+    else:
+        p[0] = []
 
 def p_terminal(p):
     '''terminal : BOOL
