@@ -35,9 +35,7 @@ def evaluate(expression, bindings):
         return None
 
     if expression[0] == 'if':
-        predicate = expression[1]
-        consequence = expression[2]
-        alternative = expression[3]
+        predicate, consequence, alternative = expression[1:4]
 
         if evaluate(predicate, bindings) == '#f':
             return evaluate(alternative, bindings)
