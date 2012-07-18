@@ -2,11 +2,11 @@ def define_variable(name, value, bindings):
     bindings[name] = evaluate(value, bindings)
 
 def define_function(parameters, body, bindings):
-    function = dict()
-    function['parameters'] = parameters
-    function['body'] = body
-    function['closure'] = bindings.copy()
-    return function
+    return {
+        'parameters': parameters,
+        'body': body,
+        'closure': bindings.copy(),
+    }
 
 def evaluate(expression, bindings):
     if   expression is None:
