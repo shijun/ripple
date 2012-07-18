@@ -44,7 +44,7 @@ def evaluate(expression, bindings):
 
     if expression[0] == 'quote':
         tail = [str(item) for item in expression[1:]]
-        return '({0})'.format(' '.join(tail))
+        return '({})'.format(' '.join(tail))
 
     # Primitives and user-defined functions are below.
     # Their parameters are evaluated.
@@ -53,7 +53,7 @@ def evaluate(expression, bindings):
 
     # primitives
     from functools import reduce
-    from operator import add, sub, mul, div
+    from operator import add, sub, mul, floordiv
 
     if   head == '+':
         return reduce(add, tail)
@@ -62,7 +62,7 @@ def evaluate(expression, bindings):
     elif head == '*':
         return reduce(mul, tail)
     elif head == '/':
-        return reduce(div, tail)
+        return reduce(floordiv, tail)
     elif head == '=':
         return '#t' if tail[0] == tail[1] else '#f'
     elif head == '>':

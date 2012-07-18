@@ -9,7 +9,7 @@ tokens = [
 # An atom is a letter or symbol, followed by
 # any number of letters, digits, or symbols.
 symbol = '!$%&|*+-/:<=>?@^_~'
-t_ATOM = r'[A-Za-z{0}]'.format(symbol) + r'[\w{0}]*'.format(symbol)
+t_ATOM = r'[A-Za-z{}]'.format(symbol) + r'[\w{}]*'.format(symbol)
 
 t_STRING = r'"(\\[abtnvfr"\\\W]|[^\\"])*"'
 
@@ -33,6 +33,6 @@ t_ignore = ' \t\n'
 literals = '()'
 
 def t_error(t):
-    print('Unknown character: {0}'.format(t.value[0]))
+    print('Unknown character: {}'.format(t.value[0]))
     t.lexer.skip(1)
 
