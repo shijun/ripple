@@ -75,8 +75,6 @@ def evaluate(expression, bindings):
     arguments = zip(function['parameters'], tail)
     function['closure'].update(arguments)
 
-    result = None
-    for statement in function['body']:
-        result = evaluate(statement, function['closure'])
-    return result
+    return reduce(lambda _, statement: evaluate(statement, function['closure']),
+                  function['body'], None)
 
