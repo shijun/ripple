@@ -9,11 +9,7 @@ def p_expression(p):
                   | quote
                   | empty'''
     from evaluate import evaluate
-
-    if len(p) == 3:
-        p[0] = evaluate(p[2], p.parser.toplevel)
-    else:
-        p[0] = evaluate(p[1], p.parser.toplevel)
+    p[0] = evaluate(p[2] if len(p) == 3 else p[1], p.parser.toplevel)
 
 def p_list(p):
     '''list : '(' elements ')' '''
