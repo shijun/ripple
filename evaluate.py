@@ -9,47 +9,48 @@ def define_function(parameters, body, bindings):
     }
 
 def evaluate(expression, bindings):
-    if   expression is None:
-        return None
-    elif isinstance(expression, str): # variable
+    if isinstance(expression, list):
+        head = expression[0]
+        tail = expression[1:]
+    elif isinstance(expression, str):
         return bindings[expression]
     elif isinstance(expression, int):
         return expression
+    else:
+        return
 
-    if expression[0] == 'lambda':
-        return define_function(expression[1], expression[2:], bindings)
+    if head == 'lambda':
+        return define_function(tail[0], tail[1:], bindings)
 
-    if expression[0] == 'define':
-        if isinstance(expression[1], list):
-            function = define_function(expression[1][1:],
-                                       expression[2:], bindings)
-            name = expression[1][0]
+    if head == 'define':
+        if isinstance(tail[0], list):
+            function = define_function(tail[0][1:], tail[1:], bindings)
+            name = tail[0][0]
             bindings[name] = function
             function['closure'][name] = function
         else:
-            define_variable(expression[1], expression[2], bindings)
-        return None
+            define_variable(tail[0], tail[1], bindings)
+        return
 
-    if expression[0] == 'set!':
-        define_variable(expression[1], expression[2], bindings)
-        return None
+    if head == 'set!':
+        define_variable(tail[0], tail[1], bindings)
+        return
 
-    if expression[0] == 'if':
-        predicate, consequence, alternative = expression[1:4]
+    if head == 'if':
+        predicate, consequence, alternative = tail[:3]
 
         if evaluate(predicate, bindings) == '#f':
             return evaluate(alternative, bindings)
         else:
             return evaluate(consequence, bindings)
 
-    if expression[0] == 'quote':
-        tail = [str(item) for item in expression[1:]]
+    if head == 'quote':
+        tail = [str(item) for item in tail]
         return '({})'.format(' '.join(tail))
 
     # Primitives and user-defined functions are below.
     # Their parameters are evaluated.
-    head = expression[0]
-    tail = [evaluate(item, bindings) for item in expression[1:]]
+    tail = [evaluate(item, bindings) for item in tail]
 
     # primitives
     from functools import reduce
