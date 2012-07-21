@@ -52,30 +52,18 @@ def evaluate(expression, bindings):
     # Their parameters are evaluated.
     tail = [evaluate(item, bindings) for item in tail]
 
-    # primitives
-    from functools import reduce
-    from operator import add, sub, mul, floordiv
-
-    if   head == '+':
-        return reduce(add, tail)
-    elif head == '-':
-        return reduce(sub, tail)
-    elif head == '*':
-        return reduce(mul, tail)
-    elif head == '/':
-        return reduce(floordiv, tail)
-    elif head == '=':
-        return '#t' if tail[0] == tail[1] else '#f'
-    elif head == '>':
-        return '#t' if tail[0] > tail[1] else '#f'
-    elif head == '<':
-        return '#t' if tail[0] < tail[1] else '#f'
+    from primitives import primitives
+    try:
+        return primitives[head](tail)
+    except KeyError:
+        pass
 
     # user-defined function
     function = bindings[head]
     arguments = zip(function['parameters'], tail)
     function['closure'].update(arguments)
 
+    from functools import reduce
     return reduce(lambda _, statement: evaluate(statement, function['closure']),
                   function['body'], None)
 
