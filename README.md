@@ -47,7 +47,7 @@ Here are the versions of the dependencies used in the development of Ripple:
 * PLY 3.4
 * LLVM 3.1
 
-Ripple may not work with Python 
+Ripple may not work with Python 2.
 
 Naming
 ======
