@@ -3,6 +3,17 @@ have eventually have the ability to compile into native machine code and will
 fully support the R7RS standard. Scheme unit tests will be used to confirm
 compatibility with the standard.
 
+Installation
+============
+
+The following commands will install the dependecies for Ripple (assuming this
+is done on a fresh install of Linux Mint 14 / Ubuntu 12.10 (Quantal Quetzal)).
+
+```
+$ sudo apt-get install python3-pip
+$ sudo pip-3.2 install ply
+```
+
 Status
 ======
 
@@ -27,13 +38,16 @@ performance of the generated machine code is at the mercy of LLVM.
 
 It'd be nice to have an HTML5 interface to Ripple.
 
-Development Environment Information
-===================================
+Dependencies
+============
 
-I'm developing Ripple on Linux Mint 14, which is based off of Ubuntu 12.10
-(Quantal Quetzal), so that means I'm using somewhat old versions of the
-following: Python (3.2), PLY (3.4), and LLVM (3.1). Ripple may not work with
-Python 2.
+Here are the versions of the dependencies used in the development of Ripple:
+
+* Python 3.2
+* PLY 3.4
+* LLVM 3.1
+
+Ripple may not work with Python 
 
 Naming
 ======
