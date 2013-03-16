@@ -3,12 +3,18 @@ a compiler later and will fully support the R5RS standard
 (http://www.schemers.org/Documents/Standards/R5RS/). Scheme unit tests will
 be used to confirm compatibility with the standard.
 
+Naming
+======
+
 The name for this interpreter is Ripple, which is my particular
 pronunciation for the famous Lisp acronym REPL (read-eval-print loop).
 Ironically, Ripple does not currently support REPL. ;)
 
 (Also the sea of parentheses common in Scheme and many other forms of Lisp
 looks like ripples of water to me (somewhat). :) )
+
+Status
+======
 
 Mathematical things like factorials can be calculated with Ripple. This is
 not meant to be a practical program that other people can use. I'm coding
@@ -35,10 +41,16 @@ doing this is by using LLVM. I might use the Python binding for LLVM
 to use LLVM 2.9. Either I will fork llvm-py or have Ripple generate
 LLVM assembly code directly.
 
+Development Environment Information
+===================================
+
 I'm developing Ripple on Ubuntu 10.10 (Maverick Meerkat), so that means I'm
 using somewhat old versions of the following: Python (2.6), PLY (3.3), and
 LLVM (2.7). Ripple is coded with forward compatibility in mind though. It
 should work in newer versions of Python at least.
+
+Licensing
+=========
 
 Ripple is licensed under GNU LGPLv3.
 
