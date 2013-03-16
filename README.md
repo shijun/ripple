@@ -3,16 +3,6 @@ have eventually have the ability to compile into native machine code and will
 fully support the R7RS standard. Scheme unit tests will be used to confirm
 compatibility with the standard.
 
-Naming
-======
-
-The name for this interpreter is Ripple, which is my particular
-pronunciation for the famous Lisp acronym REPL (read-eval-print loop).
-Ironically, Ripple does not currently support REPL. ;)
-
-(Also the sea of parentheses common in Scheme and many other forms of Lisp
-looks like ripples of water to me (somewhat). :) )
-
 Status
 ======
 
@@ -27,19 +17,15 @@ But what can this thing do anyway? It has support for arithmetic,
 variables, if statements, and functions. Functions are first-class and
 closures. Loops can be done through recursion.
 
-Optimization of the interpreter or any generated machine code is not a
-primary goal of this project.
-
 Ripple hardly has any error checking, but this keeps the code nice and
 simple. Most definitely a syntax error or type mismatch in any Scheme code
 given to Ripple will result in a Python exception being raised. I'm
 planning on adding error checking later.
 
-Eventually I want Ripple to generate machine code. The easiest way of
-doing this is by using LLVM. I might use the Python binding for LLVM
-(llvm-py), but that may prove to be limiting since it hasn't been updated
-to use LLVM 2.9. Either I will fork llvm-py or have Ripple generate
-LLVM assembly code directly.
+Optimization of the interpreter is not a primary goal of this project. The
+performance of the generated machine code is at the mercy of LLVM.
+
+It'd be nice to have an HTML5 interface to Ripple.
 
 Development Environment Information
 ===================================
@@ -48,6 +34,16 @@ I'm developing Ripple on Linux Mint 14, which is based off of Ubuntu 12.10
 (Quantal Quetzal), so that means I'm using somewhat old versions of the
 following: Python (3.2), PLY (3.4), and LLVM (3.1). Ripple may not work with
 Python 2.
+
+Naming
+======
+
+The name for this interpreter is Ripple, which is my particular
+pronunciation for the famous Lisp acronym REPL (read-eval-print loop).
+Ironically, Ripple does not currently support REPL. ;)
+
+(Also the sea of parentheses common in Scheme and many other forms of Lisp
+looks like ripples of water to me (somewhat). :) )
 
 Licensing
 =========
