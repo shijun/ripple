@@ -1,7 +1,7 @@
-Ripple is currently a Scheme interpreter coded in Python. It will be made
-a compiler later and will fully support the R5RS standard
-(http://www.schemers.org/Documents/Standards/R5RS/). Scheme unit tests will
-be used to confirm compatibility with the standard.
+Ripple is currently an incomplete Scheme interpreter coded in Python 3. It will
+have eventually have the ability to compile into native machine code and will
+fully support the R7RS standard. Scheme unit tests will be used to confirm
+compatibility with the standard.
 
 Naming
 ======
@@ -44,10 +44,10 @@ LLVM assembly code directly.
 Development Environment Information
 ===================================
 
-I'm developing Ripple on Ubuntu 10.10 (Maverick Meerkat), so that means I'm
-using somewhat old versions of the following: Python (2.6), PLY (3.3), and
-LLVM (2.7). Ripple is coded with forward compatibility in mind though. It
-should work in newer versions of Python at least.
+I'm developing Ripple on Linux Mint 14, which is based off of Ubuntu 12.10
+(Quantal Quetzal), so that means I'm using somewhat old versions of the
+following: Python (3.2), PLY (3.4), and LLVM (3.1). Ripple may not work with
+Python 2.
 
 Licensing
 =========
