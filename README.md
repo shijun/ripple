@@ -7,7 +7,7 @@ Installation
 ============
 
 The following commands will install the dependecies for Ripple (assuming this
-is done on a fresh install of Ubuntu 13.04).
+is done on a fresh install of Ubuntu 14.04).
 
 ```
 $ sudo apt-get install python3-pip
